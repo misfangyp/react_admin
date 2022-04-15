@@ -9,21 +9,77 @@ import {
 } from "@ant-design/icons";
 
 import React, { Component } from "react";
+import { routes } from "../../router";
+import { Link, useLocation } from "react-router-dom";
 // 引入connect用于连接UI组件与store
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-const { Header, Sider, Content } = Layout;
+const { Sider } = Layout;
+const { SubMenu, Item: ItemMenu } = Menu;
 
 class sideBar extends Component {
   state = {
-    collapsed: false,
+    collapsed: false
   };
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     });
   };
+  getList = (routList = [], prePath = "") => {
+    // const location = useLocation();
+    // const { pathname } = location;
+    let menuList = [];
+    let openKeys = [];
+    routList.forEach((itemObj) => {
+      itemObj.meta = itemObj.meta || {};
+      if (itemObj.redirect || itemObj.path === "*" || itemObj.meta.hideMenu) {
+        return;
+      }
+      //   if(!get)
+      if (itemObj.path === "/") {
+        menuList = menuList.concat(this.getList(itemObj.children, "/"));
+      } else if (itemObj.path !== undefined) {
+        const currentPath = prePath + itemObj.path;
+        console.log('currentPath==',currentPath,prePath)
+        if (itemObj.children) {
+          menuList.push(
+            <SubMenu
+              key={currentPath}
+              icon={itemObj.meta.icon}
+              title={itemObj.meta.title}
+            >
+              {this.getList(itemObj.children, currentPath + "/")}
+            </SubMenu>
+          );
+        //   if (pathname.match(new RegExp("^" + currentPath + "\\/\\w"))) {
+        //     openKeys.push(currentPath);
+        //   }
+        } else {
+          menuList.push(
+            <ItemMenu key={currentPath} icon={itemObj.meta.icon}>
+              <Link to={currentPath}>{itemObj.meta.title}</Link>
+            </ItemMenu>
+          );
+        }
+      } else if (itemObj.url) {
+        menuList.push(
+          <ItemMenu key={prePath + itemObj.url} icon={itemObj.meta.icon}>
+            <a href={itemObj.url} target="_blank" rel="noreferrer">
+              {itemObj.meta.title}
+            </a>
+          </ItemMenu>
+        );
+      }
+    });
+    // console.log('menuList@@@',menuList)
+    return menuList;
+  };
+  getMenuList = () => {
+    return this.getList(routes);
+  };
   render() {
+      const routLists = this.getList(routes)
     return (
       <div className="sideBar-box">
         <Layout className="sideBarLayout">
@@ -45,15 +101,7 @@ class sideBar extends Component {
               )}
             </div>
             <Menu mode="inline" defaultSelectedKeys={["1"]}>
-              <Menu.Item key="1" icon={<UserOutlined />}>
-                首页
-              </Menu.Item>
-              <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-                视频
-              </Menu.Item>
-              <Menu.Item key="3" icon={<UploadOutlined />}>
-                文件上传
-              </Menu.Item>
+              {routLists}
             </Menu>
           </Sider>
         </Layout>
@@ -62,4 +110,4 @@ class sideBar extends Component {
   }
 }
 
-export default connect()(sideBar)
+export default connect()(sideBar);

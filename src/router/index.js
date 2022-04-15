@@ -6,6 +6,13 @@
  * @LastEditors: Neo
  */
 import PageLayout from '../components/PageLayout'
+import {
+    MenuUnfoldOutlined,
+    MenuFoldOutlined,
+    UserOutlined,
+    VideoCameraOutlined,
+    UploadOutlined,
+  } from "@ant-design/icons";
 const routes = [
     {
         path: '/',
@@ -26,27 +33,31 @@ const routes = [
             path: 'customer',
             component: () => import(/* webpackChunkName: "index" */ '../containers/Customer/index'),
             meta: {
-              title: '客户'
+              title: '客户',
+              icon: <UserOutlined />
             },
-          }
+          },
         ]
       },
       {
          path: "/oder",
+         meta: {
+             title:'订单'
+         },
          element: <PageLayout />,
          children: [
             {
               path: 'success',
               component: () => import(/* webpackChunkName: "index" */ '../containers/OrderSuccess/index'),
               meta: {
-                title: '首页'
+                title: '订单完成'
               },
             },
             {
               path: 'failed',
               component: () => import(/* webpackChunkName: "index" */ '../containers/OrderFailde/index'),
               meta: {
-                title: '客户'
+                title: '订单失败'
               },
             }
           ]
@@ -85,6 +96,7 @@ const onRouteBefore = ({ pathname, meta }) => {
     }
     // 判断未登录跳转登录页
     if (!meta.noLogin) {
+        console.log(pathname)
         /**
          * 1.判断用户是否登录
          * 2.判断是否已经获取用户(权限)信息 

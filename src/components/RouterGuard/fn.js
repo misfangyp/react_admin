@@ -52,6 +52,7 @@ function transformRoutes(routes) {
         }
         list.push(obj)
     })
+    console.log(list)
     return list
 }
 
