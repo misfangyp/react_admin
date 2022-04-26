@@ -6,6 +6,9 @@
  * @LasteEditors : Fang
  */ 
 export default {
+    login() {
+       
+    },
     getUserInfo () {
         return new Promise((resolve) => {
             setTimeout(() => {

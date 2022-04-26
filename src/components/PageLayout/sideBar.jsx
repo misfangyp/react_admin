@@ -21,6 +21,7 @@ class sideBar extends Component {
   state = {
     collapsed: false
   };
+  location = () => useLocation();
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -28,7 +29,8 @@ class sideBar extends Component {
   };
   getList = (routList = [], prePath = "") => {
     // const location = useLocation();
-    // const { pathname } = location;
+    
+    const { pathname } = this.location;
     let menuList = [];
     let openKeys = [];
     routList.forEach((itemObj) => {
@@ -41,7 +43,6 @@ class sideBar extends Component {
         menuList = menuList.concat(this.getList(itemObj.children, "/"));
       } else if (itemObj.path !== undefined) {
         const currentPath = prePath + itemObj.path;
-        console.log('currentPath==',currentPath,prePath)
         if (itemObj.children) {
           menuList.push(
             <SubMenu
@@ -72,7 +73,6 @@ class sideBar extends Component {
         );
       }
     });
-    // console.log('menuList@@@',menuList)
     return menuList;
   };
   getMenuList = () => {

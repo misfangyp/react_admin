@@ -15,7 +15,7 @@ import store from '../../redux/store'
 export default function PageLayout () {
     return (
         <div className='PageLayout-index'>
-            <SideBar store={store} />
+            <SideBar />
             <div className="appMainWrap">
                 <HeadBar />
                 <div className="appMain">
